@@ -133,4 +133,7 @@ Normal mode is currently just flashing the LED at a 1 second interval.
 
 Configuration mode is currently just flashing the LED at a 200 millisecond interval.
 
+A button press in either normal or configuration modes, will break out of the
+`boot.py`.
+
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )
