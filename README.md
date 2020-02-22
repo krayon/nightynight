@@ -118,3 +118,5 @@ to transfer the *NightyNight* python files directly to the device.
 
 On boot of the ESP8266, the `boot.py` script will run. At present, it just
 flashes the LED once a second.
+
+[//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )
