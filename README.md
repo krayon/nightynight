@@ -1,4 +1,4 @@
-# NightyNight v2.0 (*NightyPyte - The MicroPython Edition*)
+# NightyNight v2.0 (*NightyPyte - The MicroPython Edition*) #
 
 [TOC]
 
@@ -35,8 +35,10 @@ more is a whole $1.50 (AU).
 
 With the new board specs I could now look at heavier base. Additionally, all
 the extra pins would allow for greater functionality. I don't recall how now,
-but I stumbled on MicroPython and thought it would be a good tool for the job,
-thus *NightyPyte* began it's life.
+but I stumbled on
+[MicroPython](https://micropython.org/)
+and thought it would be a good tool for the job, thus *NightyPyte* began
+it's life.
 
 ## Enhancements from v1 ##
 
@@ -53,3 +55,66 @@ button for input, and only the coloured LED as output. With the extra pins and
 an OLED screen I had laying around, I will now have an actual interface on a
 screen, driven by 1, 2 or even 3 buttons.
 
+## Installation ##
+
+1. Download the latest
+[ESP8266 build of MicroPython](http://micropython.org/download#esp8266)
+image; eg. For v1.12, released 2019-12-20:
+
+```bash
+wget http://micropython.org/resources/firmware/esp8266-20191220-v1.12.bin
+```
+
+2. Erase the flash:
+
+```bash
+esptool.py --port /dev/ttyUSB0 erase_flash
+```
+```
+esptool.py v1.2
+Connecting...
+Running Cesanta flasher stub...
+Erasing flash (this may take a while)...
+Erase took 10.2 seconds
+```
+
+3. Flash the image:
+
+```bash
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash -fm dio --flash_size=detect 0 esp8266-20191220-v1.12.bin
+```
+```
+esptool.py v1.2
+Connecting...
+Auto-detected Flash size: 32m
+Running Cesanta flasher stub...
+Flash params set to 0x0240
+Writing 618496 @ 0x0... 618496 (100 %)
+Wrote 618496 bytes at 0x0 in 13.9 seconds (354.8 kbit/s)...
+Leaving...
+```
+
+4. At this point you should be able to connect to the device via 
+[picocom(8)](https://linux.die.net/man/8/picocom)
+or
+[screen(1)](https://linux.die.net/man/1/screen)
+etc:
+
+```bash
+baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --baud ${baud} --imap lfcrlf /dev/ttyUSB0
+```
+
+5. Once connected, pressing <kbd>ENTER</kbd> should show the Python interactive prompt:
+
+```
+>>> 
+```
+
+6. Disconnect first, then use something like
+[uPyLoader](https://github.com/BetaRavener/uPyLoader/)
+to transfer the *NightyNight* python files directly to the device.
+
+## Running ##
+
+On boot of the ESP8266, the `boot.py` script will run. At present, it just
+flashes the LED once a second.
