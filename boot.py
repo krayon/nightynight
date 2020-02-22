@@ -82,6 +82,7 @@ if (config): #{
             if (w_sta.isconnected()): #{
                 # Connected
                 print("[BOOT  ] Connected to " + config.config['ssid']);
+                print("[BOOT  ]   IP: "        + w_sta.ifconfig()[0]);
                 break;
             #}
         #}
