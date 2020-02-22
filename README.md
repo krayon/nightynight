@@ -116,7 +116,21 @@ to transfer the *NightyNight* python files directly to the device.
 
 ## Running ##
 
-On boot of the ESP8266, the `boot.py` script will run. At present, it just
-flashes the LED once a second.
+On boot of the ESP8266, the `boot.py` script will run. At present, it does the
+following:
+
+  * Check if the Button (connected to Pin 12 (D4)) is being held down;
+    * If it is, enter *configuration mode*;
+  * If not, check for a `config.json` file;
+    * If the `config.json` file exists, but it dosen't contain non-empty
+      `ssid` **AND** `pass` values, enter *configuration mode*;
+
+  * When trying to connect to the `ssid` listed...
+    * If connected successfully, enter into *normal operation* mode;
+    * If connection times out, enter *configuration mode*;
+
+Normal mode is currently just flashing the LED at a 1 second interval.
+
+Configuration mode is currently just flashing the LED at a 200 millisecond interval.
 
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )
