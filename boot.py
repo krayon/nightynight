@@ -19,7 +19,7 @@ w_sta = network.WLAN(network.STA_IF);
 w_ap  = network.WLAN(network.AP_IF);
 
 # GPIOs
-p_but = Pin(12, Pin.IN); # Button
+p_but = Pin(12, Pin.IN, Pin.PULL_UP); # Button
 p_led = Pin(2, Pin.OUT); # LED
 
 # Network timeout in ms
