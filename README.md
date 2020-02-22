@@ -131,9 +131,22 @@ following:
 
 Normal mode is currently just flashing the LED at a 1 second interval.
 
-Configuration mode is currently just flashing the LED at a 200 millisecond interval.
+A button press in either normal mode, will break out of the `boot.py`.
 
-A button press in either normal or configuration modes, will break out of the
-`boot.py`.
+## Configuration ##
+
+In Configuration mode, the device configures itself as an Access Point (AP)
+called **NightyNight-`<hexid>`-`<ip_address>`**, where:
+  * `<hexid>`     - The 8 hexidecimal unique identifier for the device; and
+  * `<ip_address> - The IP address that the device will be listening on, once
+                    you connect.
+
+To Configure the device, you must connect to the above access point. The
+password will be **configure`<hexid>`**, where:
+  * `<hexid>`     - The 8 hexidecimal unique identifier for the device.
+
+Once connected, directing your browser to http:// `<ip_address>` to configure
+the network details. Once these are saved, a reboot will occur and the device
+will attempt to connect to the now configured AP.
 
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )

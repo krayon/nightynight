@@ -24,6 +24,7 @@ p_led = Pin(2, Pin.OUT); # LED
 
 # Network timeout in ms
 timeout_net_ms = 30000;
+net_channel    = 11;
 
 w_ap.active(False);
 
@@ -44,8 +45,13 @@ if (config): #{
     print("[BOOT  ] Loading configuration...");
     config.config_load();
 
+    if (initconfig): #{
+        print("[BOOT  ] Skipping wifi setup for config mode...");
+    #}
+
     if (
-        config.config
+        (not initconfig)
+        and config.config
         and 'ssid' in config.config
         and len(config.config['ssid']) > 0
         and 'pass' in config.config
@@ -104,20 +110,23 @@ if (initconfig): #{
 
     # Configuration mode
 
+    from ubinascii import hexlify;
+
     print("[BOOT  ] Entering (re)configuration mode...");
-    if (not w_sta.active()): #{
-        w_ap.active(True);
-    #}
 
-    while True: #{
-        v_led = 0 if v_led == 1 else 1;
-        p_led.value(v_led);
-        print("[LOOP  ] LED (" + str(v_led) + ")");
-        time.sleep(0.2); # 200 msec
+    uid = hexlify(machine.unique_id()).decode();
 
-        # Button breaks out of loop
-        if (not p_but.value()): break;
-    #}
+    w_ap.active(True);
+    time.sleep(1);
+    w_ap.config(
+         essid    = 'NightyNight-' + uid + '-' + w_ap.ifconfig()[0]
+        ,channel  = net_channel
+        ,authmode = network.AUTH_WPA2_PSK
+        ,password = 'configure'    + uid
+    );
+
+    import webserver;
+    webserver.webserver_start();
 else: #}{
 
     # Normal mode
