@@ -111,8 +111,19 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 ```
 
 6. Disconnect first, then use something like
+[pyboard.py](https://docs.micropython.org/en/latest/reference/pyboard.py.html)
+or
 [uPyLoader](https://github.com/BetaRavener/uPyLoader/)
-to transfer the *NightyNight* python files directly to the device.
+or
+[ampy](https://github.com/scientifichackers/ampy)
+to transfer the *NightyNight* python files directly to the device. eg.
+
+```bash
+pyboard.py --device /dev/ttyUSB0 -f cp \
+    boot.py config.json config.py index.html utils.py \
+    web_config_wifi.py web_nn.css web_reboot.py webserver.py \
+:
+```
 
 ## Running ##
 
