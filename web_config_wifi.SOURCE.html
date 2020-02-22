@@ -20,7 +20,7 @@
             <td><input
               name="ssid"
               type="text"
-              value=""
+              value=""" + '"' + ssid + '"' + """
               placeholder="My Network SSID"
             ></td>
           </tr>
@@ -43,7 +43,7 @@
             <td><input
               name="mqttserv"
               type="text"
-              value=""
+              value=""" + '"' + mqttserv + '"' + """
               placeholder="My MQTT Server Address"
             ></td>
           </tr>
@@ -52,7 +52,7 @@
             <td><input
               name="mqtttopic"
               type="text"
-              value=""
+              value=""" + '"' + mqtttopic + '"' + """
               placeholder="My MQTT Topic"
             ></td>
           </tr>
