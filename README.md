@@ -146,7 +146,10 @@ password will be **configure`<hexid>`**, where:
   * `<hexid>`     - The 8 hexidecimal unique identifier for the device.
 
 Once connected, directing your browser to http:// `<ip_address>` to configure
-the network details. Once these are saved, a reboot will occur and the device
-will attempt to connect to the now configured AP.
+the network details (SSID and Password for Access Point (AP)) as well as the
+details of your MQTT server and Topic. Once these are saved, a reboot will
+occur and the device will attempt to connect to the now configured AP.
+
+At present, the MQTT details are not utilised.
 
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )

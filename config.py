@@ -3,8 +3,10 @@ import os;
 import json;
 
 config = {
-     'ssid': ''
-    ,'pass': ''
+     'ssid':      ''
+    ,'pass':      ''
+    ,'mqttserv':  ''
+    ,'mqtttopic': ''
 };
 
 def config_load(): #{

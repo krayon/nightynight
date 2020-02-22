@@ -1,4 +1,6 @@
 {
      "ssid": ""
     ,"pass": ""
+    ,"mqttserv":  ""
+    ,"mqtttopic": ""
 }

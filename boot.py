@@ -114,16 +114,20 @@ if (initconfig): #{
 
     print("[BOOT  ] Entering (re)configuration mode...");
 
-    uid = hexlify(machine.unique_id()).decode();
+    # If we're connected, we made be getting triggered into configuration mode
+    # ON the AP we're connected to, so no need to create our own.
+    if (not w_sta.active()): #{
+        uid = hexlify(machine.unique_id()).decode();
 
-    w_ap.active(True);
-    time.sleep(1);
-    w_ap.config(
-         essid    = 'NightyNight-' + uid + '-' + w_ap.ifconfig()[0]
-        ,channel  = net_channel
-        ,authmode = network.AUTH_WPA2_PSK
-        ,password = 'configure'    + uid
-    );
+        w_ap.active(True);
+        time.sleep(1);
+        w_ap.config(
+             essid    = 'NightyNight-' + uid + '-' + w_ap.ifconfig()[0]
+            ,channel  = net_channel
+            ,authmode = network.AUTH_WPA2_PSK
+            ,password = 'configure'    + uid
+        );
+    #}
 
     import webserver;
     webserver.webserver_start();
