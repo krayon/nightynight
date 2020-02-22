@@ -10,7 +10,7 @@ def __DEFAULT_PAGE(ssid, mqttserv, mqtttopic): #{
 <html>
   <head>
     <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-    <title>Nighty Nighty (D1 uPython Edition)</title>
+    <title>Nighty Night (D1 uPython Edition)</title>
     <link rel="stylesheet" type="text/css" href="web_nn.css">
   </head>
   <body>
@@ -19,7 +19,7 @@ def __DEFAULT_PAGE(ssid, mqttserv, mqtttopic): #{
         <table class="mainTables">
           <tr>
             <td rowspan="8">&nbsp;</td>
-            <td colspan="2">Nighty Nighty (D1 uPython Edition)</td>
+            <td colspan="2">Nighty Night (D1 uPython Edition)</td>
             <td rowspan="8">&nbsp;</td>
           </tr>
   

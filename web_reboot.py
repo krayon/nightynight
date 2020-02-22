@@ -11,7 +11,7 @@ def __DEFAULT_PAGE(): #{
 <html>
   <head>
     <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-    <title>Nighty Nighty (D1 uPython Edition)</title>
+    <title>Nighty Night (D1 uPython Edition)</title>
   </head>
   <body>
     <h1>Rebooting in 5 seconds...</h1>
