@@ -110,7 +110,19 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 >>> 
 ```
 
-6. Disconnect first, then use something like
+6. Run the `minify.bash` script to shrink the HTML/CSS files, eg.
+
+```bash
+./minify.bash
+```
+```
+Minifying files...
+web_config_wifi.SOURCE.html (1915) --> web_config_wifi.MINIFIED.html (1212): 37% reduced
+     web_reboot.SOURCE.html ( 286) -->      web_reboot.MINIFIED.html ( 266):  7% reduced
+          web_nn.SOURCE.css (3944) -->           web_nn.MINIFIED.css (3280): 17% reduced
+```
+
+7. Disconnect first, then use something like
 [pyboard.py](https://docs.micropython.org/en/latest/reference/pyboard.py.html)
 or
 [uPyLoader](https://github.com/BetaRavener/uPyLoader/)

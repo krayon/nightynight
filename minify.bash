@@ -40,8 +40,10 @@ for fin in *SOURCE.html *SOURCE.css; do #{
     echo -n "$(strpad -l ${inw} "${fin}") ($(strpad -l ${sizw} ${finsize})) -->"
     [ "${fin: -5}" == ".html" ] && {
         tr '\n' ' ' <"${fin}"|sed 's#[ \t]\+# #g;s#> <#><#g' >"${fout}"
-    } || [ "${fin: -4}" == ".css" ] && {
-        tr '\n' ' ' <"${fin}"|sed 's#[ \t]\+# #g;s#/\*[^\*]*\*/##g' >"${fout}"
+    }
+
+    [ "${fin: -4}" == ".css" ] && {
+        tr '\n' ' ' <"${fin}"|sed 's#[ \t]\+# #g;s#/\*[^\*]*\*/##g;s#[ \t]*\([;,{}]\)[ \t]*#\1#g' >"${fout}"
     }
 
     foutsize=$(stat -c %s "${fout}")
