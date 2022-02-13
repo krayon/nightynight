@@ -14,16 +14,17 @@ import time;
 import network;
 
 # GPIOs
-p_but = Pin(12, Pin.IN, Pin.PULL_UP); # Button (D6)
-p_led = Pin( 2, Pin.OUT);             # (Blue) Status LED (D4)
+p_but = Pin(12, Pin.IN , Pin.PULL_UP); # Button (D6)
+p_led = Pin( 2, Pin.OUT);              # (Blue) Status LED (D4)
 
 # LED init
-v_led = 1; p_led.value(v_led);        # Turn the LED off
+v_led = 1; p_led.value(v_led);         # Turn the LED off
 
 # Interfaces
 w_sta = network.WLAN(network.STA_IF);
 w_ap  = network.WLAN(network.AP_IF);
 
+# Disable network for now
 w_ap.active(False);
 
 def debug_mode(): #{
@@ -63,13 +64,15 @@ if (not p_but.value()): #{
         if (p_but.value()): break;
     #}
 
-    # Not Debug, continue boot as normal
+    # If still pressing, Debug mode
     if (not p_but.value()): #{
         # DEBUG TIME!
         debug_mode();
     #}
 #}
 
-print("[BOOT  ] Normal boot: Confirmed");
+# Normal boot here
+
+print("[BOOT  ] Normal boot");
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
