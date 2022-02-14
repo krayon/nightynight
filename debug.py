@@ -1,6 +1,8 @@
 import time;
 import ui;
 
+import globs;
+
 def debug_mode(): #{
     print("[BOOT  ] Debug MODE: Confirmed");
 
@@ -12,10 +14,17 @@ def debug_mode(): #{
     ui.led_toggle();
     time.sleep(0.1); # 100 msec
 
+    # Turn the LED ON
     ui.led_on();
-    while True: #{
-        time.sleep(0.5); # 500 msec
-    #}
+
+    # Fire up REPL
+
+    #uart = machine.UART(0, 115200);
+    #os.dupterm(uart)
+
+    globs.run = False;
+    import sys;
+    sys.exit(0);
 
     #HARD# # Soft reset
     #HARD# import sys;
