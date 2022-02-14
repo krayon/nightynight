@@ -1,5 +1,4 @@
 from utils import exists;
-import os;
 import json;
 
 config = {
