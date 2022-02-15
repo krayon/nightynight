@@ -110,9 +110,30 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 >>> 
 ```
 
-6. Disconnect first, then use something like
+6. Disconnect.
+
+7. If you don't have your own config yet, create one:
+
+```bash
+cp -ai config.json{.TEMPLATE,}
+```
+
+7. Use something like
+[pyboard.py](https://docs.micropython.org/en/latest/reference/pyboard.py.html)
+or
 [uPyLoader](https://github.com/BetaRavener/uPyLoader/)
-to transfer the *NightyNight* python files directly to the device.
+or
+[ampy](https://github.com/scientifichackers/ampy)
+to transfer the *NightyNight* python files directly to the device. eg.
+
+```bash
+pyboard.py --device /dev/ttyUSB0 -f cp \
+    config.json app.py globs.py ui.py utils.py \
+    debug.py config.py main.py boot.py \
+:
+```
+
+  - _don't forget the `:` at the end there - it's the destination (the device)_
 
 # Running #
 

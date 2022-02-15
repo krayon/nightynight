@@ -4,7 +4,7 @@ import ui;
 import globs;
 
 def debug_mode(): #{
-    print("[BOOT  ] Debug MODE: Confirmed");
+    print("[DEBUG ] Mode: Debug");
 
     # Little flash
     ui.led_toggle();
@@ -22,11 +22,11 @@ def debug_mode(): #{
     #uart = machine.UART(0, 115200);
     #os.dupterm(uart)
 
-    globs.run = False;
+    globs.mode = globs.MODE_DEBUG;
     import sys;
     sys.exit(0);
 
-    #HARD# # Soft reset
+    #HARD# # Soft reset? (no more, now REPL)
     #HARD# import sys;
     #HARD# sys.exit();
 

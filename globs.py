@@ -1,6 +1,11 @@
 # Global variables
 
-run  = True;
+# Constants
+MODE_APP     = const(0);
+MODE_DEBUG   = const(1);
+MODE_CONFIG  = const(2);
+
+mode = MODE_APP;
 uid  = 'UNKNOWN';
 mac  = 'UNKNOWN';
 prod = 'Quadronyx UNKNOWN Project';

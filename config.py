@@ -1,5 +1,7 @@
-from utils import exists;
+import gc;
 import json;
+
+from utils import exists;
 
 config = {
      'ssid':      ''
@@ -28,6 +30,17 @@ def config_save(): #{
     print("[CONFIG] JSON: " + str(json.dumps(config)));
     f.write(str(json.dumps(config)));
     f.close();
+#}
+
+def launch_app(): #{
+    # REPL
+    import sys;
+    sys.exit(0);
+
+    gc.collect();
+
+    print("\n\n");
+    print("[CONFIG] Config App");
 #}
 
 # vim:ts=4:tw=80:sw=4:et:ai:si

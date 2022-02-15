@@ -3,6 +3,7 @@
 import gc;
 import time;
 
+import globs;
 import debug;
 
 try: #{
@@ -24,6 +25,9 @@ try: #{
     # Network timeout in ms
     timeout_net_ms = 30000;
 
+    # Initialise Configuration mode by holding button down on boot
+    config_mode = False;
+
     # Is button pressed?
     if (not ui.p_but.value()): #{
         # Pressed
@@ -40,14 +44,17 @@ try: #{
             if (ui.p_but.value()): break;
         #}
 
-        # If still pressing, Debug mode
+        # If still pressing, Debug mode, otherwise config mode
         if (not ui.p_but.value()): #{
             # DEBUG TIME!
             debug.debug_mode();
+        else: #}{
+            print("[BOOT  ] (Re)Configuration mode requested...");
+            globs.mode = globs.MODE_CONFIG;
         #}
     #}
 
-    # Normal boot here
+    # Normal boot (or config) here
 
     # Turn the LED off
     ui.led_off();
@@ -88,12 +95,22 @@ try: #{
                 # Timeout
                 print("[BOOT  ] Timeout connecting to " + config.config['ssid']);
                 ui.w_sta.active(False);
+                globs.mode = globs.MODE_CONFIG;
             #}
         else: #}{
-            print("[BOOT  ] No SSID defined...");
+            print("[BOOT  ] No SSID defined, forcing config mode...");
+            globs.mode = globs.MODE_CONFIG;
         #}
     else : #}{
-        print("[BOOT  ] No config found...");
+        print("[BOOT  ] No config found, forcing config mode...");
+        globs.mode = globs.MODE_CONFIG;
+    #}
+
+    # Did they choose config (or did we fail to connect)?
+    if (globs.mode == globs.MODE_CONFIG): #{
+        # Configuration mode
+
+        print("[BOOT  ] Entering (re)configuration mode...");
     #}
 
 except KeyboardInterrupt: #}{

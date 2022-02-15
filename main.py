@@ -1,4 +1,4 @@
-# Normal mode
+# Main entry point
 
 import gc;
 import time;
@@ -6,35 +6,38 @@ import time;
 import globs;
 import debug;
 
-if (not globs.run): #{
-    import sys;
-    sys.exit(0);
-#}
-
 try: #{
     gc.collect();
 
     print("\n\n");
-    print("[MAIN  ] Normal boot");
+    print("[MAIN  ] Main entry point");
 
-    import ui;
+    if (globs.mode == globs.MODE_CONFIG): #{
+        print("[MAIN  ] Mode: Config");
+        import config;
+        config.launch_app();
 
-    ui.led_off();
-    last_but = 1;
-    while True: #{
-        # Button turns LED on and off
+        time.sleep(2); # 2 secs
 
-        if (not ui.p_but.value() == last_but): #{
-            ui.led_toggle();
-            last_but = ui.p_but.value();
+        # Hard reset
+        import machine;
+        machine.reset();
 
-            print(
-                "[LOOP  ] LED: %d, BUT: %d"
-                % (ui.v_led, last_but)
-            );
-        #}
+    elif (globs.mode == globs.MODE_APP): #{
+        print("[MAIN  ] Mode: App");
+        import app;
+        app.main();
 
-        time.sleep(0.1); # 100 ms
+        time.sleep(2); # 2 secs
+
+        # Hard reset
+        import machine;
+        machine.reset();
+
+    elif (globs.mode == globs.MODE_DEBUG): #{
+        print("[MAIN  ] Mode: Debug");
+
+        # Fall through after debug exits - Once we exit, REPL will happen
     #}
 
 except KeyboardInterrupt: #}{
