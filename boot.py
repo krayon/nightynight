@@ -12,6 +12,13 @@ try: #{
     print("\n\n");
     print("[BOOT  ] NightyNight D1 booting...");
 
+    from ubinascii import hexlify;
+    import machine;
+
+    globs.uid = hexlify(machine.unique_id()).decode();
+
+    gc.collect();
+
     import config;
     import ui;
 
@@ -24,9 +31,6 @@ try: #{
 
     # Network timeout in ms
     timeout_net_ms = 30000;
-
-    # Initialise Configuration mode by holding button down on boot
-    config_mode = False;
 
     # Is button pressed?
     if (not ui.p_but.value()): #{
@@ -86,23 +90,37 @@ try: #{
                 if (ui.w_sta.isconnected()): #{
                     # Connected
                     print("[BOOT  ] Connected to " + config.config['ssid']);
-                    print("[BOOT  ]   IP: "        + ui.w_sta.ifconfig()[0]);
+                    print("[BOOT  ]   IP:      "   + ui.w_sta.ifconfig()[0]);
+                    print("[BOOT  ]   Subnet:  "   + ui.w_sta.ifconfig()[1]);
+                    print("[BOOT  ]   Gateway: "   + ui.w_sta.ifconfig()[2]);
+                    print("[BOOT  ]   DNS:     "   + ui.w_sta.ifconfig()[3]);
                     break;
                 #}
             #}
 
             if (delta >= timeout_net_ms): #{
                 # Timeout
+
                 print("[BOOT  ] Timeout connecting to " + config.config['ssid']);
+
+                ui.led_flash(1);
+
                 ui.w_sta.active(False);
                 globs.mode = globs.MODE_CONFIG;
             #}
         else: #}{
+            # No SSID set
             print("[BOOT  ] No SSID defined, forcing config mode...");
+
+            ui.led_flash(2);
             globs.mode = globs.MODE_CONFIG;
         #}
     else : #}{
+        # No config found
         print("[BOOT  ] No config found, forcing config mode...");
+
+        ui.led_flash(3);
+
         globs.mode = globs.MODE_CONFIG;
     #}
 

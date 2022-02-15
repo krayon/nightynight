@@ -34,3 +34,60 @@ def debug_mode(): #{
     import machine;
     machine.reset();
 #}
+
+# SOS (... --- ...)
+def sos(err_code=0): #{
+    try: #{
+        ui.led_off();
+
+        for i in range(10): #{
+            # S (...)
+            for c in range(3): #{
+                ui.led_toggle();
+                time.sleep(0.10);
+                ui.led_toggle();
+                time.sleep(0.40);
+            #}
+
+            time.sleep(0.50);
+
+            # O (---)
+            for c in range(3): #{
+                ui.led_toggle();
+                time.sleep(0.40);
+                ui.led_toggle();
+                time.sleep(0.10);
+            #}
+
+            time.sleep(0.50);
+
+            # S (...)
+            for c in range(3): #{
+                ui.led_toggle();
+                time.sleep(0.10);
+                ui.led_toggle();
+                time.sleep(0.40);
+            #}
+
+            time.sleep(2);
+
+            # Err code
+            for c in range(err_code): #{
+                ui.led_toggle();
+                time.sleep(0.25);
+                ui.led_toggle();
+                time.sleep(0.25);
+            #}
+
+            time.sleep(2);
+        #}
+
+        # Hard reset
+        import machine;
+        machine.reset();
+
+    except KeyboardInterrupt: #}{
+        print("Break");
+        debug_mode();
+    #}
+#}

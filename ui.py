@@ -1,4 +1,5 @@
 from machine import Pin;
+import time;
 import network;
 
 def led_toggle(): #{
@@ -17,6 +18,15 @@ def led_off(): #{
     global v_led;
     v_led = 0; # On
     led_toggle();
+#}
+
+def led_flash(n=1): #{
+    for c in range(n): #{
+        led_toggle();
+        time.sleep(0.25); # 250 ms
+        led_toggle();
+        time.sleep(0.25); # 250 ms
+    #}
 #}
 
 # GPIOs
