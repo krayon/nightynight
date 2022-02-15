@@ -2,7 +2,7 @@
 
 [TOC]
 
-## Introduction ##
+# Introduction #
 
 An ESP8266 based, WS2812 night light with wifi based (web) configuration and
 MQTT control.
@@ -16,7 +16,7 @@ commands.
 
 Designed as a Night Light for my Son.
 
-# Background
+# Background #
 
 Initially, NightyNight (v1) was designed around an ESP8266 running nothing but
 the raw code itself. I liked it because I could write it in C and just have it
@@ -40,22 +40,22 @@ but I stumbled on
 and thought it would be a good tool for the job, thus *NightyPyte* began
 it's life.
 
-## Enhancements from v1 ##
+# Enhancements from v1 #
 
-### Power Supply ###
+## Power Supply ##
 
 In version 1, the ESP-01 expects 3.3v, so a power circuit needed to be used to
 drop the 5v USB input power down to acceptable limits. With the Mini-D1, this
 is done for us.
 
-### Interface ###
+## Interface ##
 
 In version 1, the interface I was designing was based around using a single
 button for input, and only the coloured LED as output. With the extra pins and
 an OLED screen I had laying around, I will now have an actual interface on a
 screen, driven by 1, 2 or even 3 buttons.
 
-## Installation ##
+# Installation #
 
 1. Download the latest
 [ESP8266 build of MicroPython](http://micropython.org/download#esp8266)
@@ -114,9 +114,40 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 [uPyLoader](https://github.com/BetaRavener/uPyLoader/)
 to transfer the *NightyNight* python files directly to the device.
 
-## Running ##
+# Running #
 
-On boot of the ESP8266, the `boot.py` script will run. At present, it just
-flashes the LED once a second.
+On boot of the ESP8266, the `boot.py` script will run.
+
+## Boot ##
+
+`boot.py` does the following:
+
+  * Turns off wifi;
+  * Turns off blue status LED (connected to Pin 2 (D4);
+  * Check if the Button (connected to Pin 12 (D6)) is being held down;
+  * If button is held:
+    * Start flashing at increasing speed;
+    * If still held after 8 "rounds":
+      * GOTO **_debug mode_**;
+  * Load configuration (from `config.json`);
+  * If config contains valid wifi settings:
+    * Turn on wifi client and try to connect;
+  * Run `main.py`
+
+## Main ##
+
+`main.py` does the following:
+
+  * Turns the blue status LED on  when the button is     pressed;
+  * Turns the blue status LED off when the button is not pressed;
+
+## Debug Mode ##
+
+In certain cases, **_debug mode_** (`debug_mode()`) can be activated.
+
+**_debug mode_** does the following:
+
+  * Turns on blue status LED
+  * Launches the REPL interface (on UART 0)
 
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )

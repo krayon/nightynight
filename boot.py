@@ -14,6 +14,9 @@ try: #{
     import config;
     import ui;
 
+    # LED off
+    ui.led_off();
+
     # Disable network for now
     ui.w_sta.active(False);
     ui.w_ap.active(False);
@@ -26,10 +29,12 @@ try: #{
         # Pressed
         print("[BOOT  ] Button pressed. Debug mode?");
 
-        for i in range(1, 10): #{
+        for i in range(8, 0, -1): #{
             # Little flash
-            ui.led_toggle();
+            ui.led_on();
             time.sleep(float(i) / 10.0); # i * 100 msec
+            ui.led_toggle();
+            time.sleep(0.1); # 100 msec
 
             # Not Debug, continue boot as normal
             if (ui.p_but.value()): break;
@@ -69,19 +74,6 @@ try: #{
             start = time.ticks_ms();
             delta = 0;
             while (delta < timeout_net_ms): #{
-
-
-
-                # Little flash
-                ui.led_toggle();
-                time.sleep(0.1); # 100 msec
-                ui.led_toggle();
-                time.sleep(0.1); # 100 msec
-                ui.led_toggle();
-                time.sleep(0.1); # 100 msec
-
-
-
                 time.sleep(0.7); # 700 msec
                 delta = time.ticks_diff(time.ticks_ms(), start);
                 if (ui.w_sta.isconnected()): #{
@@ -99,7 +91,6 @@ try: #{
             #}
         else: #}{
             print("[BOOT  ] No SSID defined...");
-            ui.w_sta.active(False);
         #}
     else : #}{
         print("[BOOT  ] No config found...");

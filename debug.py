@@ -8,11 +8,11 @@ def debug_mode(): #{
 
     # Little flash
     ui.led_toggle();
-    time.sleep(0.1); # 100 msec
+    time.sleep(0.05); # 50 msec
     ui.led_toggle();
-    time.sleep(0.1); # 100 msec
+    time.sleep(0.05); # 50 msec
     ui.led_toggle();
-    time.sleep(0.1); # 100 msec
+    time.sleep(0.05); # 50 msec
 
     # Turn the LED ON
     ui.led_on();

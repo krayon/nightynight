@@ -19,13 +19,22 @@ try: #{
 
     import ui;
 
+    ui.led_off();
+    last_but = 1;
     while True: #{
-        ui.led_toggle();
-        print("[LOOP  ] LED (" + str(ui.v_led) + ")");
-        time.sleep(1); # 1 sec
+        # Button turns LED on and off
 
-        # Button breaks out of loop
-        if (not ui.p_but.value()): break;
+        if (not ui.p_but.value() == last_but): #{
+            ui.led_toggle();
+            last_but = ui.p_but.value();
+
+            print(
+                "[LOOP  ] LED: %d, BUT: %d"
+                % (ui.v_led, last_but)
+            );
+        #}
+
+        time.sleep(0.1); # 100 ms
     #}
 
 except KeyboardInterrupt: #}{

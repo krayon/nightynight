@@ -23,9 +23,6 @@ def led_off(): #{
 p_but = Pin(12, Pin.IN , Pin.PULL_UP); # Button (D6)
 p_led = Pin( 2, Pin.OUT);              # (Blue) Status LED (D4)
 
-# LED init - turn it off
-led_off();
-
 # Interfaces
 w_sta = network.WLAN(network.STA_IF);
 w_ap  = network.WLAN(network.AP_IF);
