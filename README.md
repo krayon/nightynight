@@ -137,7 +137,7 @@ pyboard.py --device /dev/ttyUSB0 -f cp \
 
 # Running #
 
-On boot of the ESP8266, the `boot.py` script will run.
+On boot of the ESP8266, **_Boot_** (`boot.py`) script will run.
 
 ## Boot ##
 
@@ -149,24 +149,79 @@ On boot of the ESP8266, the `boot.py` script will run.
   * If button is held:
     * Start flashing at increasing speed;
     * If still held after 8 "rounds":
-      * GOTO **_debug mode_**;
+      * Set `globs.mode` to `MODE_DEBUG`
+      * GOTO **_Debug Mode_**;
+    * If NOT still held after 8 "rounds":
+      * Set `globs.mode` to `MODE_CONFIG`
   * Load configuration (from `config.json`);
   * If config contains valid wifi settings:
     * Turn on wifi client and try to connect;
-  * Run `main.py`
+  * If config does NOT contain valid wifi settings:
+    * Set `globs.mode` to `MODE_CONFIG`
+  * If we did not connect successfully:
+    * Configure own Access Point (AP);
+    * Set `globs.mode` to `MODE_CONFIG`
+  * Run **_Main_** (`main.py`)
 
 ## Main ##
 
 `main.py` does the following:
 
+  * Checks the `globs.mode` variable and routes to either:
+    * `MODE_CONFIG`: **_Config Mode_** (`config.py:config.launch_app()`)
+    * `MODE_APP`:    **_App    Mode_** (`app.py`)
+
+## App Mode ##
+
+`app.py` does the following:
+
   * Turns the blue status LED on  when the button is     pressed;
   * Turns the blue status LED off when the button is not pressed;
 
+## Config Mode ##
+
+In certain cases, **_Config Mode_** (`config.launch_app()`) can be activated.
+
+### Network ###
+
+When in **_Config Mode_** can be entered when either connected to an existing
+network, or when running it's own Access Point (AP). The AP will run when either:
+
+  1. The connection failed in some way (timed out, password wrong, AP not found
+     etc); or
+  2. Or, the user selected **_Config Mode_** (by holding the button down on boot
+     for _less than_ 8 seconds) and then selected own AP (by pressing the button
+     during the connection (increased pulsing LED) phase).
+
+#### Own AP ####
+
+##### ESSID #####
+
+When running its own AP, the device sets its SSID to
+**NightyNight-`<hexid>`-`<ip_address>`**, where:
+
+  * `<hexid>`     - The 8 hexidecimal unique identifier for the device; and
+  * `<ip_address> - The IP address that the device will be listening on, once
+                    you connect to it.
+
+##### Password #####
+
+The password for this AP will be **configure`<hexid>`**, where:
+
+  * `<hexid>`     - The 8 hexidecimal unique identifier for the device.
+
+### Configuration ###
+
+Right now, **_Config Mode_** does the following:
+
+  * Nothing right now, just...
+  * Launches the REPL interface (on UART 0)
+
 ## Debug Mode ##
 
-In certain cases, **_debug mode_** (`debug_mode()`) can be activated.
+In certain cases, **_Debug Mode_** (`debug_mode()`) can be activated.
 
-**_debug mode_** does the following:
+**_Debug Mode_** does the following:
 
   * Turns on blue status LED
   * Launches the REPL interface (on UART 0)

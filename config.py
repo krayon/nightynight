@@ -4,10 +4,12 @@ import json;
 from utils import exists;
 
 config = {
-     'ssid':      ''
-    ,'pass':      ''
-    ,'mqttserv':  ''
-    ,'mqtttopic': ''
+     'ssid':        ''
+    ,'pass':        ''
+    ,'timeout_net': 30000
+    ,'mqttserv':    ''
+    ,'mqtttopic':   ''
+    ,'mqttport':     1880
 };
 
 def config_load(): #{

@@ -29,9 +29,6 @@ try: #{
     ui.w_sta.active(False);
     ui.w_ap.active(False);
 
-    # Network timeout in ms
-    timeout_net_ms = 30000;
-
     # Is button pressed?
     if (not ui.p_but.value()): #{
         # Pressed
@@ -79,34 +76,55 @@ try: #{
             + config.config['ssid']
             + ") configured, connecting...");
 
-            ui.w_sta.active(True);
-            ui.w_sta.connect(config.config['ssid'], config.config['pass']);
-
-            start = time.ticks_ms();
-            delta = 0;
-            while (delta < timeout_net_ms): #{
-                time.sleep(0.7); # 700 msec
-                delta = time.ticks_diff(time.ticks_ms(), start);
-                if (ui.w_sta.isconnected()): #{
-                    # Connected
-                    print("[BOOT  ] Connected to " + config.config['ssid']);
-                    print("[BOOT  ]   IP:      "   + ui.w_sta.ifconfig()[0]);
-                    print("[BOOT  ]   Subnet:  "   + ui.w_sta.ifconfig()[1]);
-                    print("[BOOT  ]   Gateway: "   + ui.w_sta.ifconfig()[2]);
-                    print("[BOOT  ]   DNS:     "   + ui.w_sta.ifconfig()[3]);
-                    break;
-                #}
-            #}
-
-            if (delta >= timeout_net_ms): #{
+            if (not ui.net_connect(
+                 ssid     = config.config['ssid']
+                ,password = config.config['pass']
+                ,timeout  = config.config['timeout_net']
+            )): #{
                 # Timeout
 
                 print("[BOOT  ] Timeout connecting to " + config.config['ssid']);
 
                 ui.led_flash(1);
 
-                ui.w_sta.active(False);
                 globs.mode = globs.MODE_CONFIG;
+
+            else: #}{
+                # Connected
+
+                print("[BOOT  ] Connected to " + config.config['ssid']);
+                print("[BOOT  ]   IP:      "   + ui.w_sta.ifconfig()[0]);
+                print("[BOOT  ]   Subnet:  "   + ui.w_sta.ifconfig()[1]);
+                print("[BOOT  ]   Gateway: "   + ui.w_sta.ifconfig()[2]);
+                print("[BOOT  ]   DNS:     "   + ui.w_sta.ifconfig()[3]);
+
+                # If we are going to config mode, give the option to go with own
+                # AP instead
+                if (globs.mode == globs.MODE_CONFIG): #{
+                    print("[BOOT  ] Waiting for explicit AP request...");
+                    for i in range(8, 0, -1): #{
+                        # Little flash
+                        ui.led_on();
+                        for j in range(i * 2): #{
+                            if (not ui.p_but.value()): break;
+                            time.sleep(0.050); # (i * 2) * 50 msec
+                        #}
+                        ui.led_toggle();
+
+                        # Requesting own AP, disable current client connection
+                        if (not ui.p_but.value()): #{
+                            ui.led_on();
+                            print("[BOOT  ] Own AP requested, disconnecting");
+                            ui.w_sta.disconnect();
+                            ui.w_sta.active(False);
+                            time.sleep(1); # 1 sec
+                            ui.led_toggle();
+                            break;
+                        #}
+
+                        time.sleep(0.1); # 100 msec
+                    #}
+                #}
             #}
         else: #}{
             # No SSID set
@@ -129,6 +147,33 @@ try: #{
         # Configuration mode
 
         print("[BOOT  ] Entering (re)configuration mode...");
+
+        # If we're connected, we are going into config mode on the AP we're
+        # connected to, so no need to create our own, otherwise create one.
+        if (not ui.w_sta.isconnected()): #{
+            if (not ui.net_ap_listen(
+                 pre_ssid = 'NightyNight-' + globs.uid + '-'
+                ,password = 'configure'    + globs.uid
+                ,timeout  = config.config['timeout_net']
+            )): #{
+                # Timeout?!
+
+                print("[BOOT  ] Timeout initialising AP!");
+
+                debug.sos(1);
+
+            else: #}{
+                # Listening
+
+                print("[BOOT  ] Listening:");
+                print("[BOOT  ]   ESSID:   "   + ui.w_ap.config('essid'));
+                print("[BOOT  ]   Channel: "   + str(ui.w_ap.config('channel')));
+                print("[BOOT  ]   IP:      "   + ui.w_ap.ifconfig()[0]);
+                print("[BOOT  ]   Subnet:  "   + ui.w_ap.ifconfig()[1]);
+                print("[BOOT  ]   Gateway: "   + ui.w_ap.ifconfig()[2]);
+                print("[BOOT  ]   DNS:     "   + ui.w_ap.ifconfig()[3]);
+            #}
+        #}
     #}
 
 except KeyboardInterrupt: #}{
