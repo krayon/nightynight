@@ -1,18 +1,32 @@
-#
-# Simple HTTP server based on the uasyncio example script
-# by J.G. Wezensky (joewez@gmail.com)
-#
+# HTTP server based on the uasyncio example script by J.G. Wezensky
 
-import uasyncio as asyncio
-import uos
-import pkg_resources
+import gc;
+import uasyncio as asyncio;
+from utils import exists;
 
-#webroot = 'wwwroot'
-webroot = ''
-default = 'index.html'
+#webroot = 'wwwroot';
+webroot = '';
+default = 'index.html';
 
-# Breaks an HTTP request into its parts and boils it down to a physical file (if possible)
-def decode_path(req):
+# Looks up the content-type based on the file extension
+def get_mime_type(file): #{
+    print("get_mime_type(" + str(file) + ")");
+
+    if file.endswith(".html"):    return "text/html"      , False;
+    if file.endswith(".css" ):    return "text/css"       , True;
+    if file.endswith(".js"  ):    return "text/javascript", True;
+    if file.endswith(".png" ):    return "image/png"      , True;
+    if file.endswith(".gif" ):    return "image/gif"      , True;
+    if file.endswith(".jpeg") or file.endswith(".jpg"):
+                                  return "image/jpeg"     , True;
+    return "text/plain", False;
+#}
+
+# Breaks an HTTP request into its parts and boils it down to a physical file
+# (if possible)
+def decode_path(req): #{
+    global webroot, default;
+
     cmd, headers = req.decode("utf-8").split('\r\n', 1)
     parts = cmd.split(' ')
     method, path = parts[0], parts[1]
@@ -29,30 +43,7 @@ def decode_path(req):
         path = path[1:]
     # return the physical path of the response file
     return webroot + '/' + path
-
-# Looks up the content-type based on the file extension
-def get_mime_type(file):
-    if file.endswith(".html"):
-        return "text/html", False
-    if file.endswith(".css"):
-        return "text/css", True
-    if file.endswith(".js"):
-        return "text/javascript", True
-    if file.endswith(".png"):
-        return "image/png", True
-    if file.endswith(".gif"):
-        return "image/gif", True
-    if file.endswith(".jpeg") or file.endswith(".jpg"):
-        return "image/jpeg", True
-    return "text/plain", False
-
-# Quick check if a file exists
-def exists(file):
-    try:
-        s = uos.stat(file)
-        return True
-    except:
-        return False
+#}
 
 @asyncio.coroutine
 def serve(reader, writer):
@@ -79,7 +70,7 @@ def serve(reader, writer):
     finally:
         yield from writer.aclose()
 
-def start():
+def start(): #{
     import logging
     logging.basicConfig(level=logging.ERROR)
 
@@ -87,4 +78,4 @@ def start():
     loop.call_soon(asyncio.start_server(serve, "0.0.0.0", 80, 20))
     loop.run_forever()
     loop.close()
-
+#}
