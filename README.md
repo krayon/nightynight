@@ -212,10 +212,9 @@ The password for this AP will be **configure`<hexid>`**, where:
 
 ### Configuration ###
 
-Right now, **_Config Mode_** does the following:
+Once in **_Config Mode_**, you can connect to the device's AP (if applicable)
+then directing your browser to `http://<ip_address>` to configure the device.
 
-  * Nothing right now, just...
-  * Launches the REPL interface (on UART 0)
 
 ## Debug Mode ##
 

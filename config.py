@@ -35,14 +35,13 @@ def config_save(): #{
 #}
 
 def launch_app(): #{
-    # REPL
-    import sys;
-    sys.exit(0);
+    print("\n\n");
+    print("[CONFIG] Config App");
 
     gc.collect();
 
-    print("\n\n");
-    print("[CONFIG] Config App");
+    import web_server;
+    web_server.webserver_start();
 #}
 
 # vim:ts=4:tw=80:sw=4:et:ai:si

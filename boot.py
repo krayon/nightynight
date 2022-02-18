@@ -14,8 +14,10 @@ try: #{
 
     from ubinascii import hexlify;
     import machine;
+    import network;
 
     globs.uid = hexlify(machine.unique_id()).decode();
+    globs.mac = hexlify(network.WLAN().config('mac'),':').decode();
 
     gc.collect();
 
