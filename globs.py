@@ -8,8 +8,8 @@ MODE_CONFIG  = const(2);
 mode = MODE_APP;
 uid  = 'UNKNOWN';
 mac  = 'UNKNOWN';
-prod = 'Quadronyx UNKNOWN Project';
+prod = 'Quadronyx NightyNight (D1 uPython Edition)';
 desc = '(Gold)';
-ver  = 'UNKNOWN';
+ver  = '0.0.1';
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
