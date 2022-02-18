@@ -1,0 +1,229 @@
+body {
+	text-align:left;
+
+	font-size:12px;
+	font-family:Verdana;
+	font-weight:normal;
+
+	color:#000000;
+}
+
+div.mainTables {
+	text-align:center;
+}
+
+.mainTables {
+	margin:0px;
+	padding:0px;
+
+/*
+	width:100%;
+*/
+/*
+	box-shadow: 10px 10px 5px #888888;
+	border:1px solid #000000;
+
+	-moz-border-radius-bottomleft:0px;
+	-webkit-border-bottom-left-radius:0px;
+	border-bottom-left-radius:0px;
+
+	-moz-border-radius-bottomright:0px;
+	-webkit-border-bottom-right-radius:0px;
+	border-bottom-right-radius:0px;
+
+	-moz-border-radius-topright:0px;
+	-webkit-border-top-right-radius:0px;
+	border-top-right-radius:0px;
+
+	-moz-border-radius-topleft:0px;
+	-webkit-border-top-left-radius:0px;
+	border-top-left-radius:0px;
+*/
+}
+
+.mainTables table {
+	margin:0 auto;
+	padding:0px;
+
+	box-shadow: 10px 10px 5px #888888;
+	border:1px solid #000000;
+
+	-moz-border-radius-bottomleft:0px;
+	-webkit-border-bottom-left-radius:0px;
+	border-bottom-left-radius:0px;
+
+	-moz-border-radius-bottomright:0px;
+	-webkit-border-bottom-right-radius:0px;
+	border-bottom-right-radius:0px;
+
+	-moz-border-radius-topright:0px;
+	-webkit-border-top-right-radius:0px;
+	border-top-right-radius:0px;
+
+	-moz-border-radius-topleft:0px;
+	-webkit-border-top-left-radius:0px;
+	border-top-left-radius:0px;
+}
+
+.mainTables tr:last-child td:last-child {
+
+	-moz-border-radius-bottomright:0px;
+
+	-webkit-border-bottom-right-radius:0px;
+
+	border-bottom-right-radius:0px;
+
+}
+
+.mainTables table tr:first-child td:first-child {
+
+	-moz-border-radius-topleft:0px;
+
+	-webkit-border-top-left-radius:0px;
+
+	border-top-left-radius:0px;
+
+}
+
+.mainTables table tr:first-child td:last-child {
+
+	-moz-border-radius-topright:0px;
+
+	-webkit-border-top-right-radius:0px;
+
+	border-top-right-radius:0px;
+
+}
+
+.mainTables tr:last-child td:first-child {
+
+	-moz-border-radius-bottomleft:0px;
+
+	-webkit-border-bottom-left-radius:0px;
+
+	border-bottom-left-radius:0px;
+
+}
+
+.mainTables tr:hover td {
+
+	background-color:#0c9dba;
+
+}
+
+.mainTables tr:nth-child(odd) {
+	background-color:#bd60cc;
+}
+
+.mainTables tr:nth-child(even) {
+	background-color:#f096ff;
+}
+
+.mainTables td {
+	vertical-align:middle;
+
+	border:1px solid #000000;
+
+	border-width:0px 1px 1px 0px;
+
+	text-align:left;
+
+	padding:7px;
+
+	font-size:12px;
+
+	font-family:Verdana;
+
+	font-weight:normal;
+
+	color:#000000;
+}
+
+.mainTables tr td:first-child {
+	text-align: right;
+	font-weight: bold;
+}
+
+.mainTables tr:last-child td {
+
+	border-width:0px 1px 0px 0px;
+
+}
+
+.mainTables tr td:last-child {
+
+	border-width:0px 0px 1px 0px;
+
+}
+
+.mainTables tr:last-child td:last-child {
+
+	border-width:0px 0px 0px 0px;
+
+}
+
+.mainTables tr:first-child td {
+
+		background:-o-linear-gradient(bottom, #71397a 5%, #261329 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #71397a), color-stop(1, #261329) );
+	background:-moz-linear-gradient( center top, #71397a 5%, #261329 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#71397a", endColorstr="#261329");	background: -o-linear-gradient(top,#71397a,261329);
+
+
+	background-color:#71397a;
+
+	border:0px solid #261329;
+
+	text-align:center;
+	vertical-align:top;
+
+	border-width:0px 0px 1px 1px;
+
+	font-size:14px;
+
+	font-family:Verdana;
+
+	font-weight:bold;
+
+	color:#ffffff;
+
+}
+
+.mainTables tr:first-child:hover td {
+
+	background:-o-linear-gradient(bottom, #71397a 5%, #261329 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #71397a), color-stop(1, #261329) );
+	background:-moz-linear-gradient( center top, #71397a 5%, #261329 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#71397a", endColorstr="#261329");	background: -o-linear-gradient(top,#71397a,261329);
+
+
+	background-color:#71397a;
+
+}
+
+.mainTables tr:first-child td:first-child {
+
+	border-width:0px 0px 1px 0px;
+
+}
+
+.mainTables tr:first-child td:last-child {
+
+	border-width:0px 0px 1px 1px;
+
+}
+
+.mainTables tr td.small {
+	font-size:10px;
+}
+
+.mainTables tr td.smaller {
+	font-size:8px;
+}
+
+.mainTables tr td.ro {
+	font-style: italic;
+}
+
+.mainTables tr td.byline {
+	font-size:  8px;
+	text-align: left;
+}

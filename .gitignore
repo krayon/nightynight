@@ -1,2 +1,4 @@
 *.swp
 config.json
+*.MINIFIED.html
+*.MINIFIED.css

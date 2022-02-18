@@ -118,7 +118,17 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 cp -ai config.json{.TEMPLATE,}
 ```
 
-7. Use something like
+7. Run the `minify.bash` script to shrink the HTML/CSS files, eg.
+
+```bash
+./minify.bash
+```
+```
+Minifying files...
+          web_nn.SOURCE.css (3944) -->           web_nn.MINIFIED.css (3280): 17% reduced
+```
+
+8. Use something like
 [pyboard.py](https://docs.micropython.org/en/latest/reference/pyboard.py.html)
 or
 [uPyLoader](https://github.com/BetaRavener/uPyLoader/)
@@ -130,6 +140,7 @@ to transfer the *NightyNight* python files directly to the device. eg.
 pyboard.py --device /dev/ttyUSB0 -f cp \
     config.json app.py globs.py ui.py utils.py \
     debug.py config.py main.py boot.py \
+    web_server.py index.html web_nn.css \
 :
 ```
 
