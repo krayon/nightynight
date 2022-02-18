@@ -1,6 +1,5 @@
 import os;
 import globs;
-import config;
 
 def index(vardict, body, page=0): #{
     print("index.index()");
