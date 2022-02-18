@@ -140,7 +140,7 @@ to transfer the *NightyNight* python files directly to the device. eg.
 pyboard.py --device /dev/ttyUSB0 -f cp \
     config.json app.py globs.py ui.py utils.py \
     debug.py config.py main.py boot.py \
-    web_server.py index.html web_nn.css \
+    web_server.py index.py web_nn.css \
 :
 ```
 
@@ -226,6 +226,17 @@ The password for this AP will be **configure`<hexid>`**, where:
 Once in **_Config Mode_**, you can connect to the device's AP (if applicable)
 then directing your browser to `http://<ip_address>` to configure the device.
 
+Configurable options are:
+
+  * Network details
+    * SSID
+    * Password
+  * MQTT details
+    * MQTT Server
+    * MQTT Port
+    * MQTT Topic
+
+Once these are saved, a reboot will occur.
 
 ## Debug Mode ##
 

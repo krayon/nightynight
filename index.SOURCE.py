@@ -15,7 +15,11 @@ def GET(vardict, body, page=0): #{
     print("index.GET()");
 
     title = globs.prod + " " + globs.desc;
-    ver = title + " " + globs.ver + "<br>\non " + os.uname().machine + " (" + os.uname().sysname + ") " + "<br>\nuPython " + os.uname().version + " (" + os.uname().release + ")";
+    ver = '<a href="' + globs.url + '">' \
+        + title + " " + globs.ver + "<br>\n" \
+        + "on " + os.uname().machine + " (" + os.uname().sysname + ") " + "<br>\n" \
+        + "uPython " + os.uname().version + " (" + os.uname().release + ")" \
+        + '</a>';
 
     return """HTTP/1.0 200 OK
 Content-Type: text/html
