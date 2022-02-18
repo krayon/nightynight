@@ -41,7 +41,7 @@ def launch_app(): #{
     gc.collect();
 
     import web_server;
-    web_server.webserver_start();
+    web_server.start();
 #}
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
