@@ -9,7 +9,8 @@ mode = MODE_APP;
 uid  = 'UNKNOWN';
 mac  = 'UNKNOWN';
 prod = 'Quadronyx NightyNight (D1 uPython Edition)';
+url  = 'https://github.com/krayon/nightynight/';
 desc = '(Gold)';
-ver  = '0.0.2';
+ver  = '2.0.3';
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
