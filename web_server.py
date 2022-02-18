@@ -6,7 +6,7 @@ from utils import exists;
 
 #webroot = 'wwwroot';
 webroot = '';
-default = 'index.html';
+default = 'index.py';
 
 size_buffer          =  512;
 size_max_http_header =  512; # TODO
@@ -71,16 +71,14 @@ def decode_path(uri): #{
 # piece it all together
 @asyncio.coroutine
 def read_complete_req(reader, writer): #{
-    print("read_complete_req()");
+    print("\nread_complete_req()");
     req = {};
-    body = '';
     headers = {};
+    body = '';
     clen = 0;
-    print("1");
 
     # Read in complete request
     while 1: #{
-        print("2");
         more = '';
 
         # TODO: Add timer here to trigger timeout
@@ -88,11 +86,10 @@ def read_complete_req(reader, writer): #{
         # TODO: Confirm this works as I expect - read won't block first try as
         # something's waiting - that's what triggered the function call in the
         # first place?
-        print("3");
         more = (yield from reader.read());
         more = more.decode() if more is not None else '';
 
-        print("\n\n\nMORE:\n", more, "\n\n\n");
+        #print("\n\n\nMORE:\n", more, "\n\n\n");
 
         if (len(more) < 1): #{
             print("[ERR ] Failed to retrieve any more data");
@@ -101,7 +98,6 @@ def read_complete_req(reader, writer): #{
             return False, req, headers, body;
         #}
 
-        print("4");
         if (len(body) + len(more) > size_max_http_total): #{
             print("[ERR ] HTTP payload beyond max: "
                 + str(len(body) + len(more))
@@ -114,14 +110,12 @@ def read_complete_req(reader, writer): #{
             return False, req, headers, body;
         #}
 
-        print("5");
         body = body + more;
 
         # Do we still need to get our headers?
         if (len(req) == 0): #{
             # Haven't split anything yet
 
-            print("6");
             # Have we at least got the headers?
             try: #{
                 firstbit, body = body.split('\r\n\r\n', 1);
@@ -145,7 +139,7 @@ def read_complete_req(reader, writer): #{
 
                 keys = ['method', 'uri', 'protocol'];
                 req = req.split();
-                if (len(req) < 3 or len(req) > 4): #{
+                if (not len(req) == 3): #{
                     print("[ERR ] HTTP Bad Request: Request not 3 elements: ", req);
                     yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
                     #yield from writer.aclose();
@@ -191,7 +185,6 @@ def read_complete_req(reader, writer): #{
             #}
         #}
 
-        print("7");
         # Have we got Content-Length yet?
         if clen > 0: #{
             # And if we do, have we got MORE data than that?
@@ -211,15 +204,13 @@ def read_complete_req(reader, writer): #{
         #}
 
         # Continue until we get our headers and determine length of body
-        print("8");
     #}
 
-    print("10");
     #print("clen:    " + str(clen));
     #print("req:     " + req);
     #print("headers: " + str(headers));
     #print("body:    " + body);
-    print("RETURNING: ", True, ", ", req, ", ", headers, ", ", body);
+    print("RETURNING: ", True, ", ", req, ", ", headers, ", ", body, "\n");
     return True, req, headers, body;
 #}
 
@@ -233,15 +224,18 @@ def serve(reader, writer): #{
     #   [str] method     - The request method
     #   [str] protocol   - The protocol (eg. "HTTP/1.1")
     #   [str] uri        - The URI      (eg. "/web_config.html")
-    # [headers] read - Did it work
-    # [bool] didread - Did it work
+    # [dict] headers   - The headers for the request:
+    #   [str] user-agent - The user agent
+    #   [str] accept     - What mimetypes are accepted
+    #   etc
+    # [str] body       - The body of the request
     if (not didread): #{
         # Failed to retrieve
         yield from writer.aclose();
         return;
     #}
     didread = None;
-    headers = None;
+    headers = None; # Don't care about headers right now
     gc.collect();
 
     try: #{
@@ -258,6 +252,15 @@ def serve(reader, writer): #{
     if exists(file): #{
         mime_type, cacheable = get_mime_type(file);
 
+        # If the name is a python file, treat it as a module that we import and
+        # then call a function named after the method of the request. We also
+        # call a function that's the name of the method, prefixed with "end", if
+        # it exists (ie. GET() and endGET()).
+        #
+        # NOTE: You MUST output the HTTP response header (eg. "HTTP/1.0 200
+        #       OK"), it's trailing new line, the Content-Type header and it's
+        #       subsequent blank line) yourself!
+
         if file.endswith(".py"): #{
             mod = None;
 
@@ -265,100 +268,57 @@ def serve(reader, writer): #{
 
             if (not vardict): vardict = {};
 
-            print("try1");
             try: #{
                 modpath = file.rsplit(".", 1)[0];
                 modname = modpath.rsplit("/", 1)[1];
                 mod     = __import__(modpath);
 
             except: #}{
+                print("[ERR ] Failed to import module: %s" % modpath);
                 yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec1\r\n\r\n");
                 yield from writer.aclose();
                 gc.collect();
                 return;
             #}
 
-            print("try2:");
-            print("\n\nmod:", mod);
-            print("\n\nmodname:", modname);
-            print("\n\nmethod:", req['method']);
-            try: #{
-                #modfunc = getattr(mod, modname);
-                modfunc = getattr(mod, req['method']);
+            for func in [modname, req['method'], 'end' + req['method']]: #{
+                try: #{
+                    modfunc = getattr(mod, func);
 
-            except: #}{
-                yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec2\r\n\r\n");
-                yield from writer.aclose();
-                gc.collect();
-                return;
-            #}
+                except: #}{
+                    if (not func == req['method']): continue;
 
-            #try: #{
-            #    # "Execute" the python module (or more specifically, it's
-            #    # function of the same name) ... UPDATE: Now use a function
-            #    # named the method (eg. GET, POST etc)
-            #    #
-            #    # NOTE: You MUST output Content-Type and newline yourself
-            #    buffer = modfunc(vardict);
+                    # req['method'] is the only required function
+                    print("[ERR ] Failed to prepare function: %s.%s" % (modname, func));
+                    yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec2\r\n\r\n");
+                    yield from writer.aclose();
+                    gc.collect();
+                    return;
+                #}
 
-            #    yield from writer.awrite("HTTP/1.0 200 OK\r\n");
-            #    #yield from writer.awrite("Content-Type: {}\r\n".format(mime_type));
-            #    #yield from writer.awrite("\r\n");
-            #    yield from writer.awrite(buffer);
+                page = 1;
+                more_pages = True;
+                while (more_pages): #{
+                    buffer, more_pages = modfunc(vardict, body, page);
+                    print("---\nBUFFER[page:%d]:\n" % page);
+                    print(buffer, "\n---\n");
 
-            #except: #}{
-            #    yield from writer.awrite("HTTP/1.0 500 Exec3\r\n\r\n");
-            #    yield from writer.aclose();
-            #    return;
-            ##}
+                    ####yield from writer.awrite("HTTP/1.0 200 OK\r\n");
 
-            print("modfunc");
+                    ##### FIXME: if buffer comes back as nothing (such as if I
+                    ##### async.sleep in the func) then write.awrite fails as buffer
+                    ##### is of type 'generator' and doesn't have .len()
 
-            # NOTE: You MUST output Content-Type and newline yourself in modfunc
-            # funtions
+                    ###yield from writer.awrite(buffer);
+                    ##if (buffer): yield from writer.awrite(buffer);
+                    #if (buffer is not None): yield from writer.awrite(buffer);
 
-            page = 1;
-            morepages = True;
-            while (morepages): #{
-                buffer, morepages = modfunc(vardict, body, page);
-                print("\n\n\nBUFFER[%d]:\n" % page);
-                print(buffer, "\n\n\n");
+                    if (len(buffer) < 1): continue;
 
-                ####yield from writer.awrite("HTTP/1.0 200 OK\r\n");
+                    yield from writer.awrite(buffer.replace('\n', '\r\n'));
 
-                ##### FIXME: if buffer comes back as nothing (such as if I
-                ##### async.sleep in the func) then write.awrite fails as buffer
-                ##### is of type 'generator' and doesn't have .len()
-
-                ###yield from writer.awrite(buffer);
-                ##if (buffer): yield from writer.awrite(buffer);
-                #if (buffer is not None): yield from writer.awrite(buffer);
-                yield from writer.awrite(buffer.replace('\n', '\r\n'));
-
-                page = page + 1;
-            #}
-
-            try: #{
-                modfunc = getattr(mod, 'end' + req['method']);
-
-            except: #}{
-                yield from writer.aclose();
-                gc.collect();
-                return;
-            #}
-
-            page = 1;
-            morepages = True;
-            while (morepages): #{
-                buffer, morepages = modfunc(vardict, body, page);
-
-                ##### FIXME: if buffer comes back as nothing (such as if I
-                ##### async.sleep in the func) then write.awrite fails as buffer
-                ##### is of type 'generator' and doesn't have .len()
-
-                yield from writer.awrite(buffer.replace('\n', '\r\n'));
-
-                page = page + 1;
+                    page = page + 1;
+                #}
             #}
 
         else: #}{
@@ -379,7 +339,9 @@ def serve(reader, writer): #{
             f.close();
             gc.collect();
         #}
+
     else: #}{
+        print("[ERR ] Not Found");
         yield from writer.awrite("HTTP/1.0 404 Not Found\r\n\r\n");
     #}
 

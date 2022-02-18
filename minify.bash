@@ -18,8 +18,6 @@ strpad() {
     [ ! -z "${leftside}" ] && echo "${xtr//0/ }${str}" || echo "${str}${xtr//0/ }"
 }
 
-echo "Minifying files..."
-
 inw=0
 sizw=0
 for fin in *SOURCE.html *SOURCE.css; do #{
@@ -34,12 +32,16 @@ unset sizw2
 
 onw=$((${inw} + 2))
 
+echo
+echo "Minifying files..."
+echo
+
 for fin in *SOURCE.html *SOURCE.css; do #{
     finsize=$(stat -c %s "${fin}")
     fout="${fin/SOURCE/MINIFIED}"
     echo -n "$(strpad -l ${inw} "${fin}") ($(strpad -l ${sizw} ${finsize})) -->"
     [ "${fin: -5}" == ".html" ] && {
-        tr '\n' ' ' <"${fin}"|sed 's#[ \t]\+# #g;s#> <#><#g' >"${fout}"
+        tr '\n' ' ' <"${fin}"|sed 's#[ \t]\+# #g;s#> <#><#g;s# *$##' >"${fout}"
     }
 
     [ "${fin: -4}" == ".css" ] && {
@@ -49,8 +51,8 @@ for fin in *SOURCE.html *SOURCE.css; do #{
     foutsize=$(stat -c %s "${fout}")
     echo -n " $(strpad -l ${onw} "${fout}") ($(strpad -l ${sizw} ${foutsize}))"
     echo ":$(strpad -l 3 "$((100 - (${foutsize}00 / ${finsize})))")% reduced"
-done #}
 
+done #}
 
 
 # vim:set ts=4 sw=4 tw=80 et ai si:

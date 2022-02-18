@@ -94,7 +94,7 @@ Wrote 618496 bytes at 0x0 in 13.9 seconds (354.8 kbit/s)...
 Leaving...
 ```
 
-4. At this point you should be able to connect to the device via 
+4. At this point you should be able to connect to the device via
 [picocom(8)](https://linux.die.net/man/8/picocom)
 or
 [screen(1)](https://linux.die.net/man/1/screen)
@@ -107,7 +107,7 @@ baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --ba
 5. Once connected, pressing <kbd>ENTER</kbd> should show the Python interactive prompt:
 
 ```
->>> 
+>>>
 ```
 
 6. Disconnect.
