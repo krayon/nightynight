@@ -10,6 +10,6 @@ uid  = 'UNKNOWN';
 mac  = 'UNKNOWN';
 prod = 'Quadronyx NightyNight (D1 uPython Edition)';
 desc = '(Gold)';
-ver  = '0.0.1';
+ver  = '0.0.2';
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
