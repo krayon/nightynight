@@ -69,8 +69,7 @@ def decode_path(uri): #{
 
 # Larger requests would not all be delivered so we need to do multiple calls to
 # piece it all together
-@asyncio.coroutine
-def read_complete_req(reader, writer): #{
+async def read_complete_req(reader, writer): #{
     print("\nread_complete_req()");
     req = {};
     headers = {};
@@ -78,12 +77,14 @@ def read_complete_req(reader, writer): #{
     clen = 0;
 
     # Read in complete request
-    while 1: #{
+    while True: #{
         more = '';
 
         # TODO: Add timer here to trigger timeout
 
-        more = (yield from reader.read());
+        # TODO: Should we be using read(bufsize)? As it's HTTP readline() is
+        #       probably the correct choice but ...?
+        more = (await reader.readline());
         more = more.decode() if more is not None else '';
 
         if (len(more) < 1): #{
@@ -99,8 +100,9 @@ def read_complete_req(reader, writer): #{
                 + " > " + str(size_max_http_total)
             );
 
-            yield from writer.awrite("HTTP/1.0 413 Payload Too Large\r\n\r\n");
-            #yield from writer.aclose();
+            writer.write("HTTP/1.0 413 Payload Too Large\r\n\r\n");
+            await writer.wait_closed();
+
             print("RETURNING: ", False, ", ", req, ", ", headers, ", ", body);
             return False, req, headers, body;
         #}
@@ -136,8 +138,8 @@ def read_complete_req(reader, writer): #{
                 req = req.split();
                 if (not len(req) == 3): #{
                     print("[ERROR ] HTTP Bad Request: Request not 3 elements: ", req);
-                    yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
-                    #yield from writer.aclose();
+                    await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
+                    #await writer.aclose();
                     return False, {}, {}, body;
                 #}
                 req = dict(zip(keys, req));
@@ -151,8 +153,8 @@ def read_complete_req(reader, writer): #{
                     headers = dict(map(lambda s : map(str.strip, s.split(':', 1)), headers));
                 except: #}{
                     print("[ERROR ] HTTP Bad Request: Failed to dict-ifying headers: ", headers);
-                    yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
-                    #yield from writer.aclose();
+                    await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
+                    #await writer.aclose();
                     return False, {}, {}, body;
                 #}
 
@@ -170,8 +172,8 @@ def read_complete_req(reader, writer): #{
 
                     print("[ERROR ] HTTP Content-Length Required");
 
-                    yield from writer.awrite("HTTP/1.0 411 Length Required\r\n\r\n");
-                    #yield from writer.aclose();
+                    await writer.awrite("HTTP/1.0 411 Length Required\r\n\r\n");
+                    #await writer.aclose();
                     return False, req, headers, body;
                 #}
             except ValueError: #}{
@@ -209,8 +211,7 @@ def read_complete_req(reader, writer): #{
     return True, req, headers, body;
 #}
 
-@asyncio.coroutine
-def serve(reader, writer): #{
+async def serve(reader, writer): #{
     print("serve()");
 
     didread, req, headers, body = await read_complete_req(reader, writer);
@@ -226,7 +227,7 @@ def serve(reader, writer): #{
     # [str] body       - The body of the request
     if (not didread): #{
         # Failed to retrieve
-        yield from writer.aclose();
+        await writer.aclose();
         return;
     #}
     didread = None;
@@ -237,8 +238,8 @@ def serve(reader, writer): #{
         file, vardict = decode_path(req['uri']);
     except: #}{
         print("[ERROR ] HTTP Bad Request: Failed to dict-ifying vararray for URI: ", req['uri']);
-        yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
-        yield from writer.aclose();
+        await writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
+        await writer.aclose();
         return;
     #}
     gc.collect();
@@ -270,8 +271,8 @@ def serve(reader, writer): #{
 
             except: #}{
                 print("[ERROR ] Failed to import module: %s" % modpath);
-                yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec1\r\n\r\n");
-                yield from writer.aclose();
+                await writer.awrite("HTTP/1.0 500 Internal Server Error: Exec1\r\n\r\n");
+                await writer.aclose();
                 gc.collect();
                 return;
             #}
@@ -285,8 +286,8 @@ def serve(reader, writer): #{
 
                     # req['method'] is the only required function
                     print("[ERROR ] Failed to prepare function: %s.%s" % (modname, func));
-                    yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec2\r\n\r\n");
-                    yield from writer.aclose();
+                    await writer.awrite("HTTP/1.0 500 Internal Server Error: Exec2\r\n\r\n");
+                    await writer.aclose();
                     gc.collect();
                     return;
                 #}
@@ -298,19 +299,19 @@ def serve(reader, writer): #{
                     print("---\nBUFFER[page:%d]:\n" % page);
                     print(buffer, "\n---\n");
 
-                    ####yield from writer.awrite("HTTP/1.0 200 OK\r\n");
+                    ####await writer.awrite("HTTP/1.0 200 OK\r\n");
 
                     ##### FIXME: if buffer comes back as nothing (such as if I
                     ##### async.sleep in the func) then write.awrite fails as buffer
                     ##### is of type 'generator' and doesn't have .len()
 
-                    ###yield from writer.awrite(buffer);
-                    ##if (buffer): yield from writer.awrite(buffer);
-                    #if (buffer is not None): yield from writer.awrite(buffer);
+                    ###await writer.awrite(buffer);
+                    ##if (buffer): await writer.awrite(buffer);
+                    #if (buffer is not None): await writer.awrite(buffer);
 
                     if (len(buffer) < 1): continue;
 
-                    yield from writer.awrite(buffer.replace('\n', '\r\n'));
+                    await writer.awrite(buffer.replace('\n', '\r\n'));
 
                     page = page + 1;
                 #}
@@ -318,17 +319,17 @@ def serve(reader, writer): #{
 
         else: #}{
             # Headers
-            yield from writer.awrite("HTTP/1.0 200 OK\r\n");
-            yield from writer.awrite("Content-Type: {}\r\n".format(mime_type));
+            await writer.awrite("HTTP/1.0 200 OK\r\n");
+            await writer.awrite("Content-Type: {}\r\n".format(mime_type));
             if cacheable: #{
-                yield from writer.awrite("Cache-Control: max-age=86400\r\n");
+                await writer.awrite("Cache-Control: max-age=86400\r\n");
             #}
-            yield from writer.awrite("\r\n");
+            await writer.awrite("\r\n");
 
             f = open(file, "rb");
             buffer = f.read(size_buffer);
             while buffer != b'': #{
-                yield from writer.awrite(buffer);
+                await writer.awrite(buffer);
                 buffer = f.read(size_buffer);
             #}
             f.close();
@@ -337,10 +338,10 @@ def serve(reader, writer): #{
 
     else: #}{
         print("[ERROR ] Not Found");
-        yield from writer.awrite("HTTP/1.0 404 Not Found\r\n\r\n");
+        await writer.awrite("HTTP/1.0 404 Not Found\r\n\r\n");
     #}
 
-    yield from writer.aclose();
+    await writer.aclose();
     gc.collect();
 #}
 
@@ -351,7 +352,7 @@ def start(): #{
     print("Initialising event loop...");
     loop = asyncio.get_event_loop();
     print("Starting server...");
-    loop.call_soon(asyncio.start_server(serve, "0.0.0.0", 80, 20));
+    loop.create_task(asyncio.start_server(serve, "0.0.0.0", 80, 20));
     print("Entering loop...");
     loop.run_forever();
     loop.close();
