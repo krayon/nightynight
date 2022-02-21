@@ -83,23 +83,18 @@ def read_complete_req(reader, writer): #{
 
         # TODO: Add timer here to trigger timeout
 
-        # TODO: Confirm this works as I expect - read won't block first try as
-        # something's waiting - that's what triggered the function call in the
-        # first place?
         more = (yield from reader.read());
         more = more.decode() if more is not None else '';
 
-        #print("\n\n\nMORE:\n", more, "\n\n\n");
-
         if (len(more) < 1): #{
-            print("[ERR ] Failed to retrieve any more data");
+            print("[ERROR ] Failed to retrieve any more data");
             #break;
             print("RETURNING: ", False, ", ", req, ", ", headers, ", ", body);
             return False, req, headers, body;
         #}
 
         if (len(body) + len(more) > size_max_http_total): #{
-            print("[ERR ] HTTP payload beyond max: "
+            print("[ERROR ] HTTP payload beyond max: "
                 + str(len(body) + len(more))
                 + " > " + str(size_max_http_total)
             );
@@ -140,7 +135,7 @@ def read_complete_req(reader, writer): #{
                 keys = ['method', 'uri', 'protocol'];
                 req = req.split();
                 if (not len(req) == 3): #{
-                    print("[ERR ] HTTP Bad Request: Request not 3 elements: ", req);
+                    print("[ERROR ] HTTP Bad Request: Request not 3 elements: ", req);
                     yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
                     #yield from writer.aclose();
                     return False, {}, {}, body;
@@ -155,7 +150,7 @@ def read_complete_req(reader, writer): #{
                 try: #{
                     headers = dict(map(lambda s : map(str.strip, s.split(':', 1)), headers));
                 except: #}{
-                    print("[ERR ] HTTP Bad Request: Failed to dict-ifying headers: ", headers);
+                    print("[ERROR ] HTTP Bad Request: Failed to dict-ifying headers: ", headers);
                     yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
                     #yield from writer.aclose();
                     return False, {}, {}, body;
@@ -173,7 +168,7 @@ def read_complete_req(reader, writer): #{
                         break;
                     #}
 
-                    print("[ERR ] HTTP Content-Length Required");
+                    print("[ERROR ] HTTP Content-Length Required");
 
                     yield from writer.awrite("HTTP/1.0 411 Length Required\r\n\r\n");
                     #yield from writer.aclose();
@@ -189,7 +184,7 @@ def read_complete_req(reader, writer): #{
         if clen > 0: #{
             # And if we do, have we got MORE data than that?
             if len(body) > clen: #{
-                print("[WARN] HTTP Content > Content-Length: "
+                print("[WARN  ] HTTP Content > Content-Length: "
                     + str(len(body))
                     + " > " + str(clen)
                 );
@@ -241,7 +236,7 @@ def serve(reader, writer): #{
     try: #{
         file, vardict = decode_path(req['uri']);
     except: #}{
-        print("[ERR ] HTTP Bad Request: Failed to dict-ifying vararray for URI: ", req['uri']);
+        print("[ERROR ] HTTP Bad Request: Failed to dict-ifying vararray for URI: ", req['uri']);
         yield from writer.awrite("HTTP/1.0 400 Bad Request\r\n\r\n");
         yield from writer.aclose();
         return;
@@ -274,7 +269,7 @@ def serve(reader, writer): #{
                 mod     = __import__(modpath);
 
             except: #}{
-                print("[ERR ] Failed to import module: %s" % modpath);
+                print("[ERROR ] Failed to import module: %s" % modpath);
                 yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec1\r\n\r\n");
                 yield from writer.aclose();
                 gc.collect();
@@ -289,7 +284,7 @@ def serve(reader, writer): #{
                     if (not func == req['method']): continue;
 
                     # req['method'] is the only required function
-                    print("[ERR ] Failed to prepare function: %s.%s" % (modname, func));
+                    print("[ERROR ] Failed to prepare function: %s.%s" % (modname, func));
                     yield from writer.awrite("HTTP/1.0 500 Internal Server Error: Exec2\r\n\r\n");
                     yield from writer.aclose();
                     gc.collect();
@@ -341,7 +336,7 @@ def serve(reader, writer): #{
         #}
 
     else: #}{
-        print("[ERR ] Not Found");
+        print("[ERROR ] Not Found");
         yield from writer.awrite("HTTP/1.0 404 Not Found\r\n\r\n");
     #}
 
