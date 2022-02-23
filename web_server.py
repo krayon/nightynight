@@ -8,9 +8,9 @@ from utils import exists;
 webroot = '';
 default = 'index.py';
 
-size_buffer          =  512;
-size_max_http_header =  512; # TODO
-size_max_http_total  = 1024;
+SIZE_BUFFER          = const( 512);
+SIZE_MAX_HTTP_HEADER = const( 512); # TODO
+SIZE_MAX_HTTP_TOTAL  = const(1024);
 
 # Looks up the content-type based on the file extension
 def get_mime_type(file): #{
@@ -94,10 +94,10 @@ async def read_complete_req(reader, writer): #{
             return False, req, headers, body;
         #}
 
-        if (len(body) + len(more) > size_max_http_total): #{
+        if (len(body) + len(more) > SIZE_MAX_HTTP_TOTAL): #{
             print("[ERROR ] HTTP payload beyond max: "
                 + str(len(body) + len(more))
-                + " > " + str(size_max_http_total)
+                + " > " + str(SIZE_MAX_HTTP_TOTAL)
             );
 
             writer.write("HTTP/1.0 413 Payload Too Large\r\n\r\n");
@@ -293,9 +293,9 @@ async def serve(reader, writer): #{
                 #}
 
                 page = 1;
-                more_pages = True;
-                while (more_pages): #{
-                    buffer, more_pages = modfunc(vardict, body, page);
+                next_offset = 0;
+                while (next_offset >= 0): #{
+                    buffer, next_offset = modfunc(SIZE_BUFFER, next_offset, vardict, body);
                     print("---\nBUFFER[page:%d]:\n" % page);
                     print(buffer, "\n---\n");
 
@@ -327,10 +327,10 @@ async def serve(reader, writer): #{
             await writer.awrite("\r\n");
 
             f = open(file, "rb");
-            buffer = f.read(size_buffer);
+            buffer = f.read(SIZE_BUFFER);
             while buffer != b'': #{
                 await writer.awrite(buffer);
-                buffer = f.read(size_buffer);
+                buffer = f.read(SIZE_BUFFER);
             #}
             f.close();
             gc.collect();
