@@ -101,7 +101,19 @@ or
 etc:
 
 ```bash
-baud=115200; stty ispeed ${baud} ospeed ${baud} </dev/ttyUSB0 && picocom -i --baud ${baud} --imap lfcrlf /dev/ttyUSB0
+baud=115200
+stty \
+    ispeed ${baud}  \
+    ospeed ${baud}  \
+    min          1  \
+    time        10  \
+    -icrnl -onlcr   \
+    -opost -isig    \
+    -icanon -iexten \
+    -echo -echoe    \
+    -echok -echoctl \
+    -echoke         \
+</dev/ttyUSB0 && picocom -i --baud ${baud} --imap lfcrlf /dev/ttyUSB0
 ```
 
 5. Once connected, pressing <kbd>ENTER</kbd> should show the Python interactive prompt:
