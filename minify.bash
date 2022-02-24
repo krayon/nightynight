@@ -19,24 +19,26 @@ strpad() {
 }
 
 inw=0
+onw=2
 sizw=0
-for fin in *SOURCE.html *SOURCE.css; do #{
+updatemaxsize() {
+    #global inw sizw
+    local inw2 sizw2
+
+    fin="${1}"
+
     inw2="${#fin}"
     [ ${inw2} -gt ${inw} ] && inw=${inw2}
 
     sizw2=$(stat -c %s "${fin}"); sizw2="${#sizw2}"
     [ ${sizw2} -gt ${sizw} ] && sizw=${sizw2}
-done #}
-unset inw2
-unset sizw2
 
-onw=$((${inw} + 2))
+    onw=$((${inw} + 2))
+}
 
-echo
-echo "Minifying files..."
-echo
+minify() {
+    fin="${1}"
 
-for fin in *SOURCE.html *SOURCE.css; do #{
     finsize=$(stat -c %s "${fin}")
     fout="${fin/SOURCE/MINIFIED}"
     echo -n "$(strpad -l ${inw} "${fin}") ($(strpad -l ${sizw} ${finsize})) -->"
@@ -51,8 +53,25 @@ for fin in *SOURCE.html *SOURCE.css; do #{
     foutsize=$(stat -c %s "${fout}")
     echo -n " $(strpad -l ${onw} "${fout}") ($(strpad -l ${sizw} ${foutsize}))"
     echo ":$(strpad -l 3 "$((100 - (${foutsize}00 / ${finsize})))")% reduced"
+}
 
+[ ${#} -le 0 ] && {
+    set -- *SOURCE.html *SOURCE.css
+
+    echo "${#}|${@}|"
+    exit 0
+}
+
+for fin in "${@}"; do #{
+    updatemaxsize "${fin}"
 done #}
 
+echo
+echo "Minifying file(s)..."
+echo
+
+for fin in "${@}"; do #{
+    minify "${fin}"
+done #}
 
 # vim:set ts=4 sw=4 tw=80 et ai si:
