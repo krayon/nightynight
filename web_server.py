@@ -278,6 +278,7 @@ async def serve(reader, writer): #{
             #}
 
             for func in [modname, req['method'], 'end' + req['method']]: #{
+                print("Looking for func: %s" % func);
                 try: #{
                     modfunc = getattr(mod, func);
 
@@ -292,11 +293,12 @@ async def serve(reader, writer): #{
                     return;
                 #}
 
+                print("Rendering func: %s" % func);
                 page = 1;
                 next_offset = 0;
                 while (next_offset >= 0): #{
                     buffer, next_offset = modfunc(SIZE_BUFFER, next_offset, vardict, body);
-                    print("---\nBUFFER[page:%d]:\n" % page);
+                    print("---\nBUFFER[page:%d, next_offset:%d]:\n" % (page, next_offset));
                     print(buffer, "\n---\n");
 
                     ####await writer.awrite("HTTP/1.0 200 OK\r\n");
@@ -309,11 +311,11 @@ async def serve(reader, writer): #{
                     ##if (buffer): await writer.awrite(buffer);
                     #if (buffer is not None): await writer.awrite(buffer);
 
-                    if (len(buffer) < 1): continue;
+                    if (len(buffer) >= 1): #{
+                        await writer.awrite(buffer.replace('\n', '\r\n'));
 
-                    await writer.awrite(buffer.replace('\n', '\r\n'));
-
-                    page = page + 1;
+                        page = page + 1;
+                    #}
                 #}
             #}
 
