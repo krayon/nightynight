@@ -153,7 +153,7 @@ pyboard.py --device /dev/ttyUSB0 -f cp \
     config.json app.py globs.py ui.py utils.py \
     debug.py config.py main.py boot.py \
     web_server.py index.py web_nn.css \
-    web_reboot.py \
+    web_reboot.py web_reboot.pyhtml \
 :
 ```
 
