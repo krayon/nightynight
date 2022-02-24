@@ -1,4 +1,4 @@
-# NightyNight v2.0 (*NightyPyte - The MicroPython Edition*) #
+# NightyNight v2 (*NightyPyte - The MicroPython Edition*) #
 
 [TOC]
 
@@ -59,10 +59,10 @@ screen, driven by 1, 2 or even 3 buttons.
 
 1. Download the latest
 [ESP8266 build of MicroPython](http://micropython.org/download#esp8266)
-image; eg. For v1.12, released 2019-12-20:
+image; eg. For v1.18, released 2022-01-17:
 
 ```bash
-wget http://micropython.org/resources/firmware/esp8266-20191220-v1.12.bin
+wget https://micropython.org/resources/firmware/esp8266-20220117-v1.18.bin
 ```
 
 2. Erase the flash:
@@ -81,7 +81,7 @@ Erase took 10.2 seconds
 3. Flash the image:
 
 ```bash
-esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash -fm dio --flash_size=detect 0 esp8266-20191220-v1.12.bin
+esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash -fm dio --flash_size=detect 0 esp8266-20220117-v1.18.bin
 ```
 ```
 esptool.py v1.2
@@ -153,6 +153,7 @@ pyboard.py --device /dev/ttyUSB0 -f cp \
     config.json app.py globs.py ui.py utils.py \
     debug.py config.py main.py boot.py \
     web_server.py index.py web_nn.css \
+    web_reboot.py \
 :
 ```
 
