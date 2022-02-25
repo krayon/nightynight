@@ -223,6 +223,11 @@ div.mainTables {
 	font-style: italic;
 }
 
+.warning {
+	background-color:#ff0000;
+	font-style: italic;
+}
+
 .mainTables tr td.byline {
 	font-size:  8px;
 	text-align: left;
