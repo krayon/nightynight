@@ -80,11 +80,9 @@ async def read_complete_req(reader, writer): #{
     while True: #{
         more = '';
 
-        # TODO: Add timer here to trigger timeout
+        # TODO: Add timer here to trigger timeout?
 
-        # TODO: Should we be using read(bufsize)? As it's HTTP readline() is
-        #       probably the correct choice but ...?
-        more = (await reader.readline());
+        more = (await reader.read(SIZE_BUFFER));
         more = more.decode() if more is not None else '';
 
         if (len(more) < 1): #{
@@ -129,7 +127,6 @@ async def read_complete_req(reader, writer): #{
                 headers = firstbit.split('\r\n');
                 firstbit = None;
 
-                print("REQUEST1: ", req);
                 # req     = [str] request (ie. "GET /puppy.png HTTP/1.1")
                 # headers = [arr] array of [str] header items
                 # body    = [str] body
@@ -146,7 +143,7 @@ async def read_complete_req(reader, writer): #{
 
                 # req     = [dict] of [str] request parts
                 #           (ie. ["method" = "GET", "uri" = "/puppy.png", "protocol" = "HTTP/1.1"])
-                print("REQUEST2: ", req);
+                print("REQUEST: ", req);
 
                 # dict-ify the header pair array
                 try: #{
@@ -160,6 +157,8 @@ async def read_complete_req(reader, writer): #{
 
                 # Lowercase the keys
                 headers = dict((k.lower(), v) for k,v in headers.items());
+
+                print("HEADERS: ", headers);
 
                 try: #{
                     clen = int(headers['content-length']);
@@ -348,9 +347,6 @@ async def serve(reader, writer): #{
 #}
 
 def start(): #{
-    #KRAYON#import logging;
-    #KRAYON#logging.basicConfig(level=logging.ERROR);
-
     print("Initialising event loop...");
     loop = asyncio.get_event_loop();
     print("Starting server...");
