@@ -263,4 +263,14 @@ In certain cases, **_Debug Mode_** (`debug_mode()`) can be activated.
   * Turns on blue status LED
   * Launches the REPL interface (on UART 0)
 
+# Design Decisions #
+
+## pyhtml ##
+
+The reason I seemingly overengineered a html templatey thing is mainly due to
+the ESP8266's (well, D1 Mini really) memory limitations. With very limited
+memory, even a basic page couldn't easily be stored as a string in a module and
+served. Once I knew I had to stream them off "disk", I figured I'd add a way to
+easily insert variables within the content. Good idea? Dunno yet but it works :)
+
 [//]: # ( vim: set ts=4 sw=4 et cindent tw=80 ai si syn=markdown ft=markdown: )

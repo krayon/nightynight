@@ -11,6 +11,6 @@ mac  = 'UNKNOWN';
 prod = 'Quadronyx NightyNight (D1 uPython Edition)';
 url  = 'https://github.com/krayon/nightynight/';
 desc = '(Gold)';
-ver  = '2.0.5';
+ver  = '2.0.6';
 
 # vim:ts=4:tw=80:sw=4:et:ai:si
