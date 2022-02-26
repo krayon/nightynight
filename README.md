@@ -152,11 +152,11 @@ to transfer the *NightyNight* python files directly to the device. eg.
 pyboard.py --device /dev/ttyUSB0 -f cp \
     config.json app.py globs.py ui.py utils.py \
     debug.py config.py main.py boot.py \
-    web_server.py web_pythml.py web_nn.css \
+    web_server.py web_pyhtml.py web_nn.css \
     index.py index.pyhtml \
     web_reboot.py web_reboot.pyhtml \
+    web_config_wifi.py web_config_wifi.pyhtml \
     favicon.ico favicon.16x16.png favicon.32x32.png \
-
 :
 ```
 
