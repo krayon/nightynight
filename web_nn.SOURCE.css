@@ -224,7 +224,12 @@ div.mainTables {
 }
 
 .warning {
-	background-color:#ff0000;
+	background-color:#D33A3A;
+	font-style: italic;
+}
+
+.confirmed {
+	background-color:#3AD33A;
 	font-style: italic;
 }
 
