@@ -211,8 +211,8 @@ In certain cases, **_Config Mode_** (`config.launch_app()`) can be activated.
 
 ### Network ###
 
-When in **_Config Mode_** can be entered when either connected to an existing
-network, or when running it's own Access Point (AP). The AP will run when either:
+**_Config Mode_** can be entered when either connected to an existing network,
+or when running it's own Access Point (AP). The AP will run when either:
 
   1. The connection failed in some way (timed out, password wrong, AP not found
      etc); or
@@ -225,22 +225,22 @@ network, or when running it's own Access Point (AP). The AP will run when either
 ##### ESSID #####
 
 When running its own AP, the device sets its SSID to
-**NightyNight-`<hexid>`-`<ip_address>`**, where:
+"**NightyNight-`<hexid>`-`<ip_address>`**", where:
 
-  * `<hexid>`     - The 8 hexidecimal unique identifier for the device; and
-  * `<ip_address> - The IP address that the device will be listening on, once
-                    you connect to it.
+  * `<hexid>`      - The 8 hexidecimal unique identifier for the device; and
+  * `<ip_address>` - The IP address that the device will be listening on, once
+                     you connect to it.
 
 ##### Password #####
 
-The password for this AP will be **configure`<hexid>`**, where:
+The password for this AP will be "**configure`<hexid>`**", where:
 
   * `<hexid>`     - The 8 hexidecimal unique identifier for the device.
 
 ### Configuration ###
 
 Once in **_Config Mode_**, you can connect to the device's AP (if applicable)
-then directing your browser to `http://<ip_address>` to configure the device.
+then direct your browser to `http://<ip_address>` to configure the device.
 
 Configurable options are:
 

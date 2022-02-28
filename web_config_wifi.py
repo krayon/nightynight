@@ -13,10 +13,11 @@ vars_com = {
     ,'ver':   ''
     ,'uid':   ''
     ,'mac':   ''
-    ,'ssid':  ''
     ,'oper':  ''
     ,'style': ''
     ,'msg':   ''
+
+    ,'ssid':  ''
 };
 
 # Returns:
